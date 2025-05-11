@@ -1,10 +1,18 @@
 from rest_framework import serializers
-from .models import SuperUser, Staff, Customer, Table, FoodCategory, Menu, Booking, Billing, Feedback;
+from .models import SuperUser, StaffType, Staff, Customer, Table, FoodCategory, Menu, Order, Booking, Billing, Feedback;
 
 
+# Deserialization - Create, Update, Delete
+# Serialization - Read (Retrieve) / View
 class SuperUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperUser
+        fields = '__all__'
+
+
+class StaffTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaffType
         fields = '__all__'
 
 
@@ -38,6 +46,12 @@ class MenuSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
@@ -54,5 +68,3 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = '__all__'
-
-
