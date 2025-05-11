@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 import json
 
 
@@ -81,35 +82,38 @@ def createSuperUser(request):
 
 
 # User Login
+@csrf_exempt
 @api_view(['POST'])
 def loginSuperUser(request):
     if request.method == 'POST':
         try:
-            data = request.data
-            username = data['username']
-            password = data['password']
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
 
             if (not username) or (not password):
                 return Response({"error": "Phone/Username and Password are required to Login."}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
-                user = User.objects.get(phone = username)
+                superUser = SuperUser.objects.get(phone = username)
             except:
                 try:
-                    user = User.objects.get(username = username)
-                except User.DoesNotExist:
+                    superUser = SuperUser.objects.get(username = username)
+                except SuperUser.DoesNotExist:
                     return Response({"error": "User Not Found."}, status=status.HTTP_404_NOT_FOUND)
             
-            if user and check_password(password, user.password):
-                auth_user = authenticate(username=user.username, password=password)
-                
+            print(f"Authenticated User: {superUser}")
+            user = superUser.user
+
+            auth_user = authenticate(username=user.username, password=password)
+            
             if auth_user and auth_user.is_authenticated:
                 login(request, user)
                 return Response({
                     "message": "Login Successful.",
-                    "username": user.username,
-                    "email": user.email,
-                    "is_superuser": user.is_superuser
+                    "username": superUser.username,
+                    "email": superUser.email,
+                    "is_superuser": superUser.is_superuser
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Incorrect Password."}, status=status.HTTP_401_UNAUTHORIZED)
@@ -121,11 +125,11 @@ def loginSuperUser(request):
 
 # Add Staff Type
 @api_view(['POST'])
-@login_required
+# @login_required
 def createStaffType(request):
     if request.method == 'POST':
         try:
-            data = request.data
+            data = json.loads(request.body)
 
             if not data['staff_type_name'] or not len(data['staff_type_name']) > 2:
                 return Response({"error": "Invalid Staff Type."}, status=status.HTTP_400_BAD_REQUEST)
