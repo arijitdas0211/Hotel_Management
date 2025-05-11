@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class SuperUser(models.Model):
@@ -12,13 +13,14 @@ class SuperUser(models.Model):
     is_superuser = models.BooleanField(default=True, choices=[(True, 'Superuser'), (False, 'Staff')])
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'superuser'
 
     def __str__(self):
         return self.name
-    
+
 
 class StaffType(models.Model):
     staff_type_id = models.AutoField(primary_key=True)
@@ -70,6 +72,7 @@ class Customer(models.Model):
     food_pref = models.IntegerField(choices = food_choices, default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'customer'
