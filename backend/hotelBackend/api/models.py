@@ -10,6 +10,7 @@ class SuperUser(models.Model):
     username = models.CharField(max_length=30, unique=True)
     password = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True, choices=[(True, 'Active'), (False, 'Inactive')])
+    is_staff = models.BooleanField(default=True, choices=[(True, 'Staff'), (False, 'Superuser')])
     is_superuser = models.BooleanField(default=True, choices=[(True, 'Superuser'), (False, 'Staff')])
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
@@ -37,16 +38,17 @@ class StaffType(models.Model):
 class Staff(models.Model):
     staff_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    staff_type = models.ForeignKey(StaffType, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     username = models.CharField(max_length=30, unique=True)
     password = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True, choices=([True, 'Active'], [False, 'Inactive']))
+    is_staff = models.BooleanField(default=True, choices=([True, 'Staff'], [False, 'Super User']))
     is_superuser = models.BooleanField(default=False, choices=([True, 'Super User'], [False, 'Staff']))
-    superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
+    staff_type = models.OneToOneField(StaffType, on_delete=models.CASCADE)
+    superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'staff'
@@ -72,7 +74,7 @@ class Customer(models.Model):
     food_pref = models.IntegerField(choices = food_choices, default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'customer'
@@ -85,7 +87,7 @@ class Table(models.Model):
     table_id = models.AutoField(primary_key=True)
     table_no = models.IntegerField(unique=True)
     capacity = models.IntegerField()
-    status = models.BooleanField(default=False, choices=[(True, 'Active'), (False, 'Inactive')])
+    status = models.BooleanField(default=True, choices=[(True, 'Active'), (False, 'Inactive')])
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
@@ -104,6 +106,9 @@ class FoodCategory(models.Model):
     food_type = models.IntegerField(choices = food_choices, default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(Staff, on_delete=models.CASCADE)
+
 
     class Meta:
         db_table = 'food_category'
@@ -116,12 +121,13 @@ class Menu(models.Model):
     menu_id = models.AutoField(primary_key=True)
     item_name = models.CharField(max_length=100)
     item_price = models.FloatField()
-    food_category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE)
     food_type = models.IntegerField(choices = food_choices, default=3)
     item_status = models.BooleanField(default=True, choices=[(True, 'Active'), (False, 'Inactive')])
     item_image = models.ImageField(upload_to='menu_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    food_category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
     created_by = models.ForeignKey(Staff, on_delete=models.CASCADE)
 
     class Meta:
@@ -133,12 +139,12 @@ class Menu(models.Model):
 
 class Booking(models.Model):
     booking_id = models.AutoField(primary_key=True)
-    booking_date = models.DateField()
-    booking_time = models.TimeField()
+    booking_date = models.DateField(auto_now_add=True)
+    booking_time = models.TimeField(auto_now_add=True)
     no_of_people = models.PositiveIntegerField()
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    table = models.OneToOneField(Table, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, default=None)
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
     booking_status = models.BooleanField(default=False, choices=[(True, 'Confirmed'), (False, 'Cancelled')])
 
     class Meta:
@@ -150,13 +156,13 @@ class Booking(models.Model):
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    table = models.ForeignKey(Table, on_delete=models.CASCADE)
     items = models.ManyToManyField(Menu)
     order_date = models.DateField(auto_now_add=True)
     order_time = models.TimeField(auto_now_add=True)
     order_status = models.BooleanField(default=False, choices=[(True, 'Completed'), (False, 'In Progress')])
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    table = models.OneToOneField(Table, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'order'
@@ -167,16 +173,17 @@ class Order(models.Model):
 
 class Billing(models.Model):
     bill_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
     total_amount = models.FloatField()
     bill_date = models.DateField(auto_now_add=True)
     bill_time = models.TimeField(auto_now_add=True)
     bill_status = models.BooleanField(default=False, choices=[(True, 'Generated'), (False, 'Pending')])
-    bill_payment_status = models.BooleanField(default=False, choices=[])
+    bill_payment_status = models.BooleanField(default=False, choices=[(True, 'Paid'), (False, 'Unpaid')])
+    bill_payment_mode = models.CharField(max_length=100, choices=[('Cash', 'Cash'), ('Card', 'Card'), ('UPI', 'UPI')], default='Cash')
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    staff = models.OneToOneField(Staff, on_delete=models.CASCADE)
+    table = models.OneToOneField(Table, on_delete=models.CASCADE)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'billing'
@@ -187,15 +194,15 @@ class Billing(models.Model):
 
 class Feedback(models.Model):
     feedback_id = models.AutoField(primary_key = True)
-    customer = models.ForeignKey(Customer, on_delete = models.CASCADE)
-    billing = models.ForeignKey(Billing, on_delete = models.CASCADE)
-    table = models.ForeignKey(Table, on_delete = models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete = models.CASCADE)
     rating = models.IntegerField(default=0, choices = [(i, str(i)) for i in range(1, 6)]) # 1 to 5 rating
     feedback = models.TextField()
-    feedback_date = models.DateField()
+    feedback_date = models.DateField(auto_now_add=True)
     feedback_time = models.TimeField()
     feedback_status = models.BooleanField(default = False, choices=[(True, 'Provided'), (False, 'Not Provided')])
+    customer = models.OneToOneField(Customer, on_delete = models.CASCADE)
+    billing = models.OneToOneField(Billing, on_delete = models.CASCADE)
+    table = models.OneToOneField(Table, on_delete = models.CASCADE)
+    staff = models.OneToOneField(Staff, on_delete = models.CASCADE)
 
     class Meta:
         db_table = 'feedback'

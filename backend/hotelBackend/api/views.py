@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.utils import timezone
 import json
 
 
@@ -84,6 +85,7 @@ def createSuperUser(request):
 # User Login
 @csrf_exempt
 @api_view(['POST'])
+# User can login with phone, username or email
 def loginSuperUser(request):
     if request.method == 'POST':
         try:
@@ -99,8 +101,11 @@ def loginSuperUser(request):
             except:
                 try:
                     superUser = SuperUser.objects.get(username = username)
-                except SuperUser.DoesNotExist:
-                    return Response({"error": "User Not Found."}, status=status.HTTP_404_NOT_FOUND)
+                except:
+                    try: 
+                        superUser = SuperUser.objects.get(email = username)
+                    except SuperUser.DoesNotExist:
+                        return Response({"error": "User Not Found."}, status=status.HTTP_404_NOT_FOUND)
             
             print(f"Authenticated User: {superUser}")
             user = superUser.user
@@ -109,6 +114,8 @@ def loginSuperUser(request):
             
             if auth_user and auth_user.is_authenticated:
                 login(request, user)
+                superUser.last_login = timezone.now()
+                superUser.save()
                 return Response({
                     "message": "Login Successful.",
                     "username": superUser.username,
@@ -124,27 +131,32 @@ def loginSuperUser(request):
 
 
 # Add Staff Type
+@login_required
 @api_view(['POST'])
-# @login_required
 def createStaffType(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-
-            if not data['staff_type_name'] or not len(data['staff_type_name']) > 2:
-                return Response({"error": "Invalid Staff Type."}, status=status.HTTP_400_BAD_REQUEST)
-            
+        data = json.loads(request.body)
+        user = request.user
+        if user.is_superuser:
             try:
-                serializer = StaffTypeSerializer(data=data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, {"message": "Staff type successfully created."}, status=status.HTTP_201_CREATED)
-            except Exception as err:
-                print(f"Serializer Error: {serializer.errors}")
-                return Response(serializer.errors, {"error": "Error while creating staff."}, status=status.HTTP_400_BAD_REQUEST)
+                if not data['staff_type_name'] or not len(data['staff_type_name']) > 2:
+                    return Response({"error": "Invalid Staff Type."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                try:
+                    serializer = StaffTypeSerializer(data=data)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(serializer.data, {"message": "Staff type successfully created."}, status=status.HTTP_201_CREATED)
+                except Exception as err:
+                    print(f"Serializer Error: {serializer.errors}")
+                    return Response(serializer.errors, {"error": "Error while creating staff."}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as err:
-            print(f"Staff Type can't be added: {err}")
-            return Response({"error": "Something went wrong."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception as err:
+                print(f"Staff Type can't be added: {err}")
+                return Response({"error": "Something went wrong."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"error": "You are not authorized to add staff type."}, status=status.HTTP_403_FORBIDDEN)
+
+
 
 
