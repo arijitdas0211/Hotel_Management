@@ -1,0 +1,113 @@
+/* Blurred full background */
+.login-wrapper {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("/login_bg.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* blur handled below */
+    overflow: hidden;
+}
+
+.login-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: inherit;
+    background-repeat: inherit;
+    filter: blur(0);
+    z-index: 0;
+}
+
+/* Card container */
+.login-card {
+    position: relative;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(2px);
+    padding: 70px;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Image */
+.login-logo-wrapper {
+    margin-bottom: 1rem;
+}
+
+.login-logo {
+    width: 150px;
+    height: auto;
+}
+
+/* Heading */
+.login-heading {
+    font-size: 1.1rem;
+    color: #FFFFFF;
+    margin-bottom: 1.5rem;
+}
+
+/* Input fields */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+/* Button */
+.login-button {
+    width: 100%;
+    padding: 0.70rem;
+    background-color: #333333;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #000000;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 576px) {
+    /* .login-card {
+        padding: 1.5rem;
+        margin: 0 1rem;
+    } */
+
+    .login-logo {
+        width: 90px;
+    }
+
+    .form-control {
+        padding: 0.65rem 0.9rem;
+        font-size: 0.95rem;
+    }
+
+    .login-button {
+        font-size: 0.95rem;
+    }
+}

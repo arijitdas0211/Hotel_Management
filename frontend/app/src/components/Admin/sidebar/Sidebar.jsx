@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./Sidebar.css";
+import { Link } from "react-router-dom";
+import Dashboard from "../dashboard_cards/Card";
 
 export default function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth <= 992);
@@ -21,10 +23,10 @@ export default function Sidebar() {
                     <div className="sidebar_body">
                         <ul className="sidebar_menu">
                             <li className="sidebar_item active">
-                                <a href="#menu1" className="sidebar_link">
+                                <Link to="/admin/dashboard" className="sidebar_link">
                                     <i className="fa-solid fa-chart-line" /> &nbsp;
                                     <span>Dashboard</span>
-                                </a>
+                                </Link>
                             </li>
                             <li className="sidebar_item">
                                 <a href="#menu2" className="sidebar_link">
@@ -69,10 +71,10 @@ export default function Sidebar() {
                                 </a>
                             </li>
                             <li className="sidebar_item">
-                                <a href="#menu5" className="sidebar_link">
+                                <Link to="/admin/login" className="sidebar_link">
                                     <i className="fa-solid fa-arrow-right-from-bracket" /> &nbsp;
                                     <span>Logout</span>
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -95,9 +97,7 @@ export default function Sidebar() {
                                 </ol>
                             </nav>
                         </div>
-                        <div className="main_body col-12 col-lg-12 col-md-12 col-sm-12">
-
-                        </div>
+                        <Dashboard />
                         <div className="main_footer col-12 col-lg-12 col-md-12 col-sm-12 shadow position-absolute bottom-0 p-2 text-white w-100 m-0">
                             <div className="footer_text text-center">
                                 &copy; {new Date().getFullYear()} Hotel Management Application | Admin Panel
