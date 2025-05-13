@@ -4,6 +4,7 @@ from .models import SuperUser, StaffType, Staff, Customer, Table, FoodCategory, 
 
 # Deserialization - Create, Update, Delete
 # Serialization - Read (Retrieve) / View
+# Serializer subclass
 class SuperUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperUser

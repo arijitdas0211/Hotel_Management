@@ -90,7 +90,7 @@ def loginSuperUser(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            username = data.get('username')
+            username = (data.get('username'))
             password = data.get('password')
 
             if (not username) or (not password):

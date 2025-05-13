@@ -49,6 +49,7 @@ class Staff(models.Model):
     last_login = models.DateTimeField(auto_now=True)
     staff_type = models.OneToOneField(StaffType, on_delete=models.CASCADE)
     superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'staff'
@@ -145,7 +146,7 @@ class Booking(models.Model):
     table = models.OneToOneField(Table, on_delete=models.CASCADE)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE, default=None)
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
-    booking_status = models.BooleanField(default=False, choices=[(True, 'Confirmed'), (False, 'Cancelled')])
+    booking_status = models.BooleanField(default=True, choices=[(True, 'Confirmed'), (False, 'Cancelled')])
 
     class Meta:
         db_table = 'booking'
