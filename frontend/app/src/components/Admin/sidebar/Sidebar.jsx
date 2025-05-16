@@ -1,14 +1,37 @@
 import { useState } from "react";
 import "./Sidebar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "../dashboard_cards/Card";
 
+
 export default function Sidebar() {
+    const navigate = useNavigate();
     const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth <= 992);
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
     }
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch("http://localhost:8000/api/admin/logout/", {
+                method: 'POST',
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                console.log("User logged out.");
+                navigate("/admin/login");
+            } else {
+                console.log("Logout failed: ", response.status);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     return (
         <>
@@ -71,7 +94,7 @@ export default function Sidebar() {
                                 </a>
                             </li>
                             <li className="sidebar_item">
-                                <Link to="/admin/login" className="sidebar_link">
+                                <Link onClick={handleLogout} className="sidebar_link">
                                     <i className="fa-solid fa-arrow-right-from-bracket" /> &nbsp;
                                     <span>Logout</span>
                                 </Link>

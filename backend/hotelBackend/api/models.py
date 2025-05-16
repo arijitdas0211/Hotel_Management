@@ -39,15 +39,15 @@ class Staff(models.Model):
     staff_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=10, unique=True)
-    email = models.EmailField(max_length=100, unique=True)
+    email = models.EmailField(max_length=100, unique=True, null=True, blank=True)
     username = models.CharField(max_length=30, unique=True)
     password = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True, choices=([True, 'Active'], [False, 'Inactive']))
     is_staff = models.BooleanField(default=True, choices=([True, 'Staff'], [False, 'Super User']))
     is_superuser = models.BooleanField(default=False, choices=([True, 'Super User'], [False, 'Staff']))
     created_at = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now=True)
-    staff_type = models.OneToOneField(StaffType, on_delete=models.CASCADE)
+    last_login = models.DateTimeField()
+    staff_type = models.ForeignKey(StaffType, on_delete=models.CASCADE)
     superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -74,7 +74,7 @@ class Customer(models.Model):
     address = models.CharField(max_length=200)
     food_pref = models.IntegerField(choices = food_choices, default=3)
     created_at = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now=True)
+    last_login = models.DateTimeField()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -91,8 +91,8 @@ class Table(models.Model):
     status = models.BooleanField(default=True, choices=[(True, 'Active'), (False, 'Inactive')])
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    # created_by_superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE, null=True, blank=True)
+    created_by_staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         db_table = 'table'
@@ -107,9 +107,8 @@ class FoodCategory(models.Model):
     food_type = models.IntegerField(choices = food_choices, default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(Staff, on_delete=models.CASCADE)
-
+    created_by_superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE, null=True, blank=True)
+    created_by_staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         db_table = 'food_category'
@@ -128,8 +127,8 @@ class Menu(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     food_category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(SuperUser, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    created_by_superuser = models.ForeignKey(SuperUser, on_delete=models.CASCADE, null=True, blank=True)
+    created_by_staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         db_table = 'menu'
@@ -140,12 +139,12 @@ class Menu(models.Model):
 
 class Booking(models.Model):
     booking_id = models.AutoField(primary_key=True)
-    booking_date = models.DateField(auto_now_add=True)
-    booking_time = models.TimeField(auto_now_add=True)
+    booking_date = models.DateField()
+    booking_time = models.TimeField()
     no_of_people = models.PositiveIntegerField()
-    table = models.OneToOneField(Table, on_delete=models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, default=None)
-    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     booking_status = models.BooleanField(default=True, choices=[(True, 'Confirmed'), (False, 'Cancelled')])
 
     class Meta:
@@ -161,9 +160,9 @@ class Order(models.Model):
     order_date = models.DateField(auto_now_add=True)
     order_time = models.TimeField(auto_now_add=True)
     order_status = models.BooleanField(default=False, choices=[(True, 'Completed'), (False, 'In Progress')])
-    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    table = models.OneToOneField(Table, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'order'
@@ -180,9 +179,9 @@ class Billing(models.Model):
     bill_status = models.BooleanField(default=False, choices=[(True, 'Generated'), (False, 'Pending')])
     bill_payment_status = models.BooleanField(default=False, choices=[(True, 'Paid'), (False, 'Unpaid')])
     bill_payment_mode = models.CharField(max_length=100, choices=[('Cash', 'Cash'), ('Card', 'Card'), ('UPI', 'UPI')], default='Cash')
-    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
-    staff = models.OneToOneField(Staff, on_delete=models.CASCADE)
-    table = models.OneToOneField(Table, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
 
@@ -198,17 +197,18 @@ class Feedback(models.Model):
     rating = models.IntegerField(default=0, choices = [(i, str(i)) for i in range(1, 6)]) # 1 to 5 rating
     feedback = models.TextField()
     feedback_date = models.DateField(auto_now_add=True)
-    feedback_time = models.TimeField()
+    feedback_time = models.TimeField(auto_now_add=True)
     feedback_status = models.BooleanField(default = False, choices=[(True, 'Provided'), (False, 'Not Provided')])
-    customer = models.OneToOneField(Customer, on_delete = models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete = models.CASCADE)
     billing = models.OneToOneField(Billing, on_delete = models.CASCADE)
-    table = models.OneToOneField(Table, on_delete = models.CASCADE)
-    staff = models.OneToOneField(Staff, on_delete = models.CASCADE)
+    table = models.ForeignKey(Table, on_delete = models.CASCADE)
+    staff = models.ForeignKey(Staff, on_delete = models.CASCADE)
 
     class Meta:
         db_table = 'feedback'
 
     def __str__(self):
         return f"{self.feedback_id} - {self.customer.name} - {self.billing.bill_date} - {self.rating} - {self.feedback_status}"
+
 
 

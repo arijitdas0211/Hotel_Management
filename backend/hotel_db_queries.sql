@@ -4,7 +4,7 @@ DROP DATABASE hotel_db;
 SELECT * FROM superuser;
 -- django auth user;
 SELECT * FROM auth_user;
--- DELETE FROM auth_user WHERE id = 15;
+DELETE FROM auth_user WHERE id = 4;
 DELETE FROM SUPERUSER WHERE admin_id = 1;
 SELECT * FROM staff;
 SELECT * FROM staff_type;
