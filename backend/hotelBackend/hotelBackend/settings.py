@@ -42,14 +42,7 @@ INSTALLED_APPS = [
     'api',
 ]
 
-# Custom Auth with rest_framework
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ]
-}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -61,19 +54,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173"
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-]
-
-CORS_ALLOW_CREDENTIALS = True
-SESSION_COOKIE_SAMESITE = "None"
-
-ROOT_URLCONF = 'hotelBackend.urls'
 
 TEMPLATES = [
     {
@@ -148,3 +128,27 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom codes added from here -------------
+# Custom Auth with rest_framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+ROOT_URLCONF = 'hotelBackend.urls'
+
+AUTH_USER_MODEL = 'api.MyUser'
+

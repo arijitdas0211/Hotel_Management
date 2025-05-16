@@ -1,0 +1,5 @@
+1. Modify user model for better maintainability and flexibility (Need to work with session, permissions, etc.)
+2. Need to integrate 3rd party APIs.
+3. Enhance location based finding.
+4. AI
+5. Try to automate.

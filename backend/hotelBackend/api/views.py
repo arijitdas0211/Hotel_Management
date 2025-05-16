@@ -75,7 +75,6 @@ def createSuperUser(request):
 
 
 # SuperUser, Staff Login (by phone, email, or username)
-@csrf_exempt
 @api_view(['POST', 'GET'])
 def loginUser(request):
     if request.method == 'POST':
@@ -130,7 +129,6 @@ def loginUser(request):
             return handleGetMethod(Staff, "staff", StaffSerializer, request.user.id)
 
 
-@csrf_exempt
 @api_view(['POST'])
 def logoutUser(request):
     user = request.user
@@ -140,7 +138,6 @@ def logoutUser(request):
 
 # Create Staff Type
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-# @permission_classes([IsAuthenticated])
 def createStaffType(request):
     user = request.user
     if not user.is_superuser or not user.is_active:
@@ -178,7 +175,6 @@ def createStaffType(request):
 
 # Create Staff
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createStaff(request):
     if request.method == 'POST':
         user = request.user
@@ -248,7 +244,6 @@ def createStaff(request):
 
 # Both SuperUser and Staff have access
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createTable(request):
     if request.method == 'POST':
         user = request.user
@@ -293,7 +288,6 @@ def createTable(request):
 
 # Both SuperUser and Staff have access
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createFoodCategory(request):
     if request.method == 'POST':
         user = request.user
@@ -345,7 +339,6 @@ def createFoodCategory(request):
 
 # Both SuperUser and Staff have access
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createMenu(request):
     if request.method == 'POST':
         user = request.user
@@ -398,7 +391,6 @@ def createMenu(request):
 
 # Both Staff and User have access
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createBooking(request):
     if request.method == 'POST':
         user = request.user
@@ -465,7 +457,6 @@ def createBooking(request):
 
 # Both SuperUser and Staff have access
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createOrder(request):
     if request.method == 'POST':
         user = request.user
@@ -507,7 +498,6 @@ def createOrder(request):
 
 # Both SuperUser and Staff have access
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
 def createBilling(request):
     pass
 
