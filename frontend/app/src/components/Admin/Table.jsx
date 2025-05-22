@@ -2,51 +2,26 @@ import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
 import "datatables.net-select-dt";
 import "datatables.net-responsive-dt";
-import { Watch, Vortex, MutatingDots } from "react-loader-spinner";
-import { useEffect, useState } from "react";
+import Loader from "./Loader";
 
 export default function Table() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate data fetching
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
-
   DataTable.use(DT);
   const options = {
     paging: true,
     responsive: true,
   };
-
-  if (loading) {
-    return (
-      <div style={{ height: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <MutatingDots
-          visible={loading}
-          height="100"
-          width="100"
-          color="#303f9f"
-          secondaryColor="#1976d2"
-          radius="12.5"
-          ariaLabel="mutating-dots-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          />
-      </div>
-    );
-  }
   
   return (
     <>
+      {/* <Loader /> */}
       <div className="action_container bg-white shadow-sm">
         <div
           className="card border-0 p-3"
           style={{ borderRadius: 0, cursor: "default" }}
         >
-          <h4 className="card-header bg-white p-3">Manage Table</h4>
+          <div className="card-header p-3">
+            <h4 className="card-title">Manage Table</h4>
+          </div>
           <div className="card-body container">
             <form className="row align-items-center">
               <div className="col-12 col-md-4 col-lg-4 mb-3">

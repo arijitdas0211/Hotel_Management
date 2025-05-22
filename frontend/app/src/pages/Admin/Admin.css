@@ -305,7 +305,11 @@ body {
   cursor: pointer;
   min-height: 110px;
 }
-
+.card-header {
+  background-color: #303f9f;
+  border-radius: 0;
+  color: #ffffff;
+}
 /* .card:hover {
   transform: translateY(-5px);
 } */
@@ -376,6 +380,45 @@ button {
   border-radius: 0 !important;
 }
 
-/* Customizing DATATABLE */
+/* Multiselect searchable dropdown */
+.multi-select-dropdown {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
 
-/* Customizing DATATABLE */
+.multi-select-dropdown .form-control {
+  background-color: #fff;
+}
+
+.multi-select-dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+}
+
+.multi-select-dropdown .dropdown-item {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.multi-select-dropdown .dropdown-item.active {
+  background-color: #303f9f;
+  color: #fff;
+}
+
+.multi-select-dropdown .dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+/* Multiselect searchable dropdown */

@@ -19,6 +19,7 @@
     "datatables.net-react": "^1.0.1",
     "datatables.net-responsive-dt": "^3.0.4",
     "datatables.net-select-dt": "^3.0.0",
+    "html2pdf.js": "^0.10.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-loader-spinner": "^6.1.6",

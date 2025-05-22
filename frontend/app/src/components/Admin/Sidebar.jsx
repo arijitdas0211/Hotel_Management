@@ -1,7 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Sidebar() {
+  // const [activeLink, setActiveLink] = useState();
+  const location = useLocation();
+
+  const menuItems = [
+    { label: "Dashboard", icon: "fa-chart-line", path: "/admin/dashboard" },
+    { label: "Staff Type", icon: "fa-users-between-lines", path: "/admin/staff-type" },
+    { label: "Staff", icon: "fa-users", path: "/admin/staff" },
+    { label: "Table", icon: "fa-brands fa-uncharted", path: "/admin/table" },
+    { label: "Menu Category", icon: "fa-list", path: "/admin/menu-category" },
+    { label: "Menu", icon: "fa-utensils", path: "/admin/menu" },
+    { label: "Booking", icon: "fa-calendar-days", path: "/admin/bookings" },
+    { label: "Order", icon: "fa-clipboard", path: "/admin/orders" },
+    { label: "Billing", icon: "fa-file-invoice", path: "/admin/billing" },
+    { label: "User Feedbacks", icon: "fa-comments", path: "/admin/userfeedback" },
+    { label: "Logout", icon: "fa-arrow-right-from-bracket", path: "/admin/login" },
+  ];
+
   const [isCollapsed, setIsCollapsed] = useState(
     () => window.innerWidth <= 992
   );
@@ -21,67 +38,23 @@ export default function Sidebar() {
         <hr className="mt-0" />
         <div className="sidebar_body">
           <ul className="sidebar_menu">
-            <li className={`sidebar_item active`}>
-              <Link to="/admin/dashboard" className="sidebar_link">
-                <i className="fa-solid fa-chart-line" /> &nbsp;
-                <span>Dashboard</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/staff-type" className="sidebar_link">
-                <i className="fa-solid fa-users-between-lines" /> &nbsp;
-                <span>Staff Type</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/staff" className="sidebar_link">
-                <i className="fa-solid fa-users" /> &nbsp;
-                <span>Staff</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/table" className="sidebar_link">
-                <i className="fa-brands fa-uncharted" /> &nbsp;
-                <span>Table</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/menu-category" className="sidebar_link">
-                <i className="fa-solid fa-list" /> &nbsp;
-                <span>Menu Category</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/menu" className="sidebar_link">
-                <i className="fa-solid fa-utensils" /> &nbsp;
-                <span>Menu</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/billing" className="sidebar_link">
-                <i className="fa-solid fa-file-invoice" /> &nbsp;
-                <span>Billing</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/userfeedback" className="sidebar_link">
-                <i className="fa-regular fa-comments" /> &nbsp;
-                <span>User Feedbacks</span>
-              </Link>
-            </li>
-            <li className={`sidebar_item`}>
-              <Link to="/admin/login" className="sidebar_link">
-                <i className="fa-solid fa-arrow-right-from-bracket" /> &nbsp;
-                <span>Logout</span>
-              </Link>
-            </li>
+            {menuItems.map((item, index) => (
+              
+              <li key={index} className={`sidebar_item ${location.pathname === item.path ? 'active' : ''}`}>
+                <Link to={item.path} className="sidebar_link">
+                  <i className={`fa-solid ${item.icon}`} /> &nbsp;
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            
+            ))}
           </ul>
         </div>
       </div>
 
       <div className="main_container pb-0">
         <div className="toggleDiv position-fixed">
-          <button className="btn btn-primary toggleBtn" onClick={toggleSidebar}>
+          <button className="btn btn-primary toggleBtn shadow" onClick={toggleSidebar}>
             <i className="fa-solid fa-bars" />
           </button>
         </div>

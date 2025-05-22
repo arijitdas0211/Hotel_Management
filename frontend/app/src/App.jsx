@@ -10,6 +10,8 @@ import Staff from "./components/Admin/Staff";
 import Table from "./components/Admin/Table";
 import MenuCategory from "./components/Admin/MenuCategory";
 import Menu from "./components/Admin/Menu";
+import Bookings from "./components/Admin/Bookings";
+import Orders from "./components/Admin/Orders";
 import Billing from "./components/Admin/Billing";
 import Userfeedback from "./components/Admin/Userfeedback";
 
@@ -31,6 +33,8 @@ function App() {
           <Route path="table" element={<Table />} />
           <Route path="menu-category" element={<MenuCategory />} />
           <Route path="menu" element={<Menu />} />
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="orders" element={<Orders />} />
           <Route path="billing" element={<Billing />} />
           <Route path="userfeedback" element={<Userfeedback />} />
         </Route>

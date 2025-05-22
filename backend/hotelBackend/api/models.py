@@ -148,13 +148,13 @@ class Menu(models.Model):
 
 class Booking(models.Model):
     id = models.AutoField(primary_key=True)
-    bookingDateTime = models.DateTimeField(auto_now_add=True)
+    booking_date = models.DateField()
+    booking_time = models.TimeField()
     totalPeople = models.PositiveIntegerField()
     table = models.ForeignKey(Table, on_delete=models.CASCADE, default=None)
+    food_type = models.IntegerField(choices=FOOD_CHOICES, default=3)
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(StaffProfile, on_delete=models.CASCADE)
-    booking_start_time = models.DateTimeField()
-    booking_end_time = models.DateTimeField()
     status = models.CharField(max_length=20, default='confirmed', choices=[
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
@@ -163,7 +163,7 @@ class Booking(models.Model):
 
     class Meta:
         db_table = 'booking'
-        ordering = ['-bookingDateTime']
+        ordering = ['-booking_time']
 
     def __str__(self):
         return f"Booking {self.id}"
@@ -173,7 +173,7 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     items = models.ManyToManyField(Menu, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.BooleanField(default=False, choices=[(True, 'Progress'), (False, 'Completed')])
+    status = models.CharField(max_length=20, default='progress', choices=[('progress', 'Progress'), ('completed', 'Completed')])
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
     created_by = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
 
@@ -182,11 +182,12 @@ class Order(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Order {self.id}"
+        return f"Order: {self.id} | {self.booking.customer.first_name}"
 
 
 class Billing(models.Model):
     id = models.AutoField(primary_key=True)
+    billItems = models.ForeignKey(Order, on_delete=models.CASCADE)
     totalAmount = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=False)
@@ -196,7 +197,6 @@ class Billing(models.Model):
         ('card', 'Card'),
         ('upi', 'UPI')
     ], default='cash')
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
     created_by = models.ForeignKey(StaffProfile, on_delete=models.CASCADE)
 
     class Meta:

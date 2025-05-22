@@ -1,7 +1,9 @@
-import React from 'react'
+import Loader from "./Loader";
 
 export default function Userfeedback() {
   return (
-    <div>Userfeedback</div>
+    <>
+      {/* <Loader /> */}
+    </>
   )
 }
