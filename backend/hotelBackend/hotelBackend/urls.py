@@ -15,10 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/admin/token/', TokenObtainPairView.as_view(), name='get_token'),
+    path('api/admin/token/refresh/', TokenRefreshView.as_view(), name='refresh'),
+    path('api/admin/token/verify/', TokenVerifyView.as_view(), name='verify'),
     path('api/', include('api.urls')),
     path('api-auth/', include('rest_framework.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

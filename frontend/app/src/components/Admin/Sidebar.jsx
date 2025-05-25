@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, Navigate } from "react-router-dom";
 
 export default function Sidebar() {
   // const [activeLink, setActiveLink] = useState();
@@ -7,7 +7,11 @@ export default function Sidebar() {
 
   const menuItems = [
     { label: "Dashboard", icon: "fa-chart-line", path: "/admin/dashboard" },
-    { label: "Staff Type", icon: "fa-users-between-lines", path: "/admin/staff-type" },
+    {
+      label: "Staff Type",
+      icon: "fa-users-between-lines",
+      path: "/admin/staff-type",
+    },
     { label: "Staff", icon: "fa-users", path: "/admin/staff" },
     { label: "Table", icon: "fa-brands fa-uncharted", path: "/admin/table" },
     { label: "Menu Category", icon: "fa-list", path: "/admin/menu-category" },
@@ -15,8 +19,16 @@ export default function Sidebar() {
     { label: "Booking", icon: "fa-calendar-days", path: "/admin/bookings" },
     { label: "Order", icon: "fa-clipboard", path: "/admin/orders" },
     { label: "Billing", icon: "fa-file-invoice", path: "/admin/billing" },
-    { label: "User Feedbacks", icon: "fa-comments", path: "/admin/userfeedback" },
-    { label: "Logout", icon: "fa-arrow-right-from-bracket", path: "/admin/login" },
+    {
+      label: "User Feedbacks",
+      icon: "fa-comments",
+      path: "/admin/userfeedback",
+    },
+    {
+      label: "Logout",
+      icon: "fa-arrow-right-from-bracket",
+      path: "/admin/login",
+    },
   ];
 
   const [isCollapsed, setIsCollapsed] = useState(
@@ -26,12 +38,17 @@ export default function Sidebar() {
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
-  
+
   return (
     <>
       <div className={`sidebar shadow ${isCollapsed ? "collapsed" : ""}`}>
         <div className="sidebar_header m-auto text-center pt-4 pb-4">
-          <h1 className={`sidebar_title text-white fs-2 ${isCollapsed ? "collapsed" : ""}`} style={{ fontFamily: '"Poetsen One", sans-serif' }}>
+          <h1
+            className={`sidebar_title text-white fs-2 ${
+              isCollapsed ? "collapsed" : ""
+            }`}
+            style={{ fontFamily: '"Poetsen One", sans-serif' }}
+          >
             Hola!
           </h1>
         </div>
@@ -39,14 +56,26 @@ export default function Sidebar() {
         <div className="sidebar_body">
           <ul className="sidebar_menu">
             {menuItems.map((item, index) => (
-              
-              <li key={index} className={`sidebar_item ${location.pathname === item.path ? 'active' : ''}`}>
+              <li
+                key={index}
+                className={`sidebar_item ${
+                  location.pathname === item.path ? "active" : ""
+                }`}
+                onClick={
+                  item.label === "Logout"
+                    ? (e) => {
+                        e.preventDefault();
+                        localStorage.clear();
+                        return <Navigate to="/admin/login" />
+                      }
+                    : undefined
+                }
+              >
                 <Link to={item.path} className="sidebar_link">
                   <i className={`fa-solid ${item.icon}`} /> &nbsp;
                   <span>{item.label}</span>
                 </Link>
               </li>
-            
             ))}
           </ul>
         </div>
@@ -54,7 +83,10 @@ export default function Sidebar() {
 
       <div className="main_container pb-0">
         <div className="toggleDiv position-fixed">
-          <button className="btn btn-primary toggleBtn shadow" onClick={toggleSidebar}>
+          <button
+            className="btn btn-primary toggleBtn shadow"
+            onClick={toggleSidebar}
+          >
             <i className="fa-solid fa-bars" />
           </button>
         </div>

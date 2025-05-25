@@ -1,6 +1,7 @@
 import Loader from "./Loader";
 
 export default function Dashboard() {
+
   return (
     <>
       {/* <Loader /> */}
@@ -66,4 +67,3 @@ export default function Dashboard() {
     </>
   );
 }
-

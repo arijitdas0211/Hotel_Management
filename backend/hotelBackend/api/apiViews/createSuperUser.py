@@ -1,6 +1,8 @@
 from .imports import *
 
+
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def createSuperUser(request):
     try:
         data = request.data
@@ -14,14 +16,14 @@ def createSuperUser(request):
         # Extract safely
         name = str(data.get('name', '')).strip()
         email = str(data.get('email', '')).strip()
-        username = str(data.get('username', '')).strip()
         phone = str(data.get('phone', '')).strip()
+        username = str(data.get('username', '')).strip()
         password = str(data.get('password', '')).strip()
 
         # Validating each fields
         if len(name) <= 2:
             return Response({"error": "Name must be at least 3 characters long."}, status=status.HTTP_400_BAD_REQUEST)
-        if not phone.isdigit or len(phone) != 10:
+        if not phone.isdigit() or len(phone) != 10:
             return Response({"error": "Phone number must be exactly 10 digits."}, status=status.HTTP_400_BAD_REQUEST)
         if len(username) < 3:
             return Response({"error": "Username must be at least 3 characters long."}, status=status.HTTP_400_BAD_REQUEST)

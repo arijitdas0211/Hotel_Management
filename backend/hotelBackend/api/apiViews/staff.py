@@ -1,7 +1,7 @@
 from .imports import *
 
-@permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'PATCH', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def staff(request, pk):
     user = request.user
     if not SuperUserProfile.objects.get(myUser=user.id):

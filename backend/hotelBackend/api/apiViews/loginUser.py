@@ -1,7 +1,9 @@
 from .imports import *
+from rest_framework_simplejwt.tokens import RefreshToken
 
-@csrf_exempt
+
 @api_view(['POST', 'GET'])
+@permission_classes([AllowAny])
 def loginUser(request):
     if request.method == 'POST':
         try:
@@ -39,20 +41,33 @@ def loginUser(request):
                 user.last_login = timezone.now()
                 user.save()
 
-                # Now return the correct profile
+                # Generate JWT tokens
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+
+                # Serialize profile based on role
                 if user.user_type == 'superuser':
                     profile = SuperUserProfile.objects.get(myUser=user)
-                    return Response({"data": SuperUserSerializer(profile).data}, status=200)
+                    serialized_profile = SuperUserSerializer(profile).data
                 elif user.user_type == 'staff':
                     profile = StaffProfile.objects.get(myUser=user)
-                    return Response({"data": StaffSerializer(profile).data}, status=200)
+                    serialized_profile = StaffSerializer(profile).data
                 elif user.user_type == 'customer':
                     profile = CustomerProfile.objects.get(myUser=user)
-                    return Response({"data": CustomerSerializer(profile).data}, status=200)
+                    serialized_profile = CustomerSerializer(profile).data
                 else:
                     return Response({"error": "Unknown user role."}, status=400)
 
-            return Response({"error": "Incorrect Password."}, status=401)
+                # Return tokens and profile data
+                return Response({
+                    "access": access_token,
+                    "refresh": refresh_token,
+                    "data": serialized_profile
+                }, status=200)
+                
+            else:
+                return Response({"error": "Incorrect Password."}, status=401)
 
         except Exception as e:
             traceback.print_exc()
@@ -64,13 +79,13 @@ def loginUser(request):
         if not user or not user.is_authenticated:
             return Response({"error": "Unauthorized."}, status=401)
         try:
-            if user.user_type == 'superuser':
+            if user.staffType == 'superuser':
                 profile = SuperUserProfile.objects.get(myUser=user)
                 return Response({"data": SuperUserSerializer(profile).data}, status=200)
-            elif user.user_type == 'staff':
+            elif user.staffType == 'staff':
                 profile = StaffProfile.objects.get(myUser=user)
                 return Response({"data": StaffSerializer(profile).data}, status=200)
-            elif user.user_type == 'customer':
+            elif user.staffType == 'customer':
                 profile = CustomerProfile.objects.get(myUser=user)
                 return Response({"data": CustomerSerializer(profile).data}, status=200)
             else:

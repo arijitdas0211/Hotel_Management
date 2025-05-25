@@ -154,11 +154,12 @@ class Booking(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE, default=None)
     food_type = models.IntegerField(choices=FOOD_CHOICES, default=3)
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
-    assigned_to = models.ForeignKey(StaffProfile, on_delete=models.CASCADE)
+    # assigned_to = models.ForeignKey(StaffProfile, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, default='confirmed', choices=[
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
-        ('progress', 'Progress')
+        ('progress', 'Progress'),
+        ('completed', 'Completed')
     ])
 
     class Meta:

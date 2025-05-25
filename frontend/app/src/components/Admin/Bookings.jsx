@@ -106,9 +106,10 @@ export default function Bookings() {
               <div className="col-12 col-md-2 col-lg-2 mb-3">
                 <label className="form-label fw-medium">Status</label>
                 <select className="form-select">
-                  <option defaultValue="In-Progress">In-Progress</option>
                   <option defaultValue="Confirmed">Confirmed</option>
-                  <option defaultValue="Cancelled">Cancelled</option>
+                  <option defaultValue="completed">Completed</option>
+                  <option defaultValue="progress">In-Progress</option>
+                  <option defaultValue="cancelled">Cancelled</option>
                 </select>
               </div>
               <div className="col-12 text-center mt-3">
@@ -116,7 +117,7 @@ export default function Bookings() {
                   type="submit"
                   className="myBtn btn btn-primary bg_primary text-white shadow-sm"
                 >
-                  Add Menu
+                  Create Booking
                 </button>
               </div>
             </form>

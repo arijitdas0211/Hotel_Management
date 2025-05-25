@@ -14,9 +14,9 @@ import Bookings from "./components/Admin/Bookings";
 import Orders from "./components/Admin/Orders";
 import Billing from "./components/Admin/Billing";
 import Userfeedback from "./components/Admin/Userfeedback";
+import ProtectedRoute from "./components/Admin/ProtectedRoute";
 
 function App() {
-  
   return (
     <BrowserRouter>
       <Routes>
@@ -26,8 +26,10 @@ function App() {
         {/* User routes */}
         {/* Admin login */}
         <Route path="/admin/login" element={<Login />} />
+        {/* Admin login */}
+        
         <Route path="/admin" element={<Admin />}>
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="staff-type" element={<StaffTypeForm />} />
           <Route path="staff" element={<Staff />} />
           <Route path="table" element={<Table />} />
@@ -38,7 +40,7 @@ function App() {
           <Route path="billing" element={<Billing />} />
           <Route path="userfeedback" element={<Userfeedback />} />
         </Route>
-        {/* Admin login */}
+        
       </Routes>
     </BrowserRouter>
   );
