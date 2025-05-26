@@ -70,7 +70,7 @@ export default function Staff() {
                       <th>Contact No</th>
                       <th>Staff type</th>
                       <th>Access Privilege</th>
-                      <th>Created by</th>
+                      {/* <th>Created by</th> */}
                       <th>Actions</th>
                   </tr>
               </thead>
@@ -84,7 +84,7 @@ export default function Staff() {
                       <td>
                         <span className="badge text-bg-success">Staff</span>
                       </td>
-                      <td>Arijit</td>
+                      {/* <td>Arijit</td> */}
                       <td>
                         <button className='btn btn-primary bg_primary btn-sm'>
                           <i className="fa-regular fa-pen-to-square" />

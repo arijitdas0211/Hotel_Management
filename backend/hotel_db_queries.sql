@@ -8,6 +8,8 @@ DELETE FROM myuser WHERE id = 3;
 DELETE FROM SUPERUSER WHERE admin_id = 1;
 SELECT * FROM staff;
 SELECT * FROM staff_type;
+TRUNCATE TABLE staff_type;
+TRUNCATE TABLE staff;
 SELECT * FROM customer;
 SELECT * FROM food_category;
 SELECT * FROM menu;

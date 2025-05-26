@@ -55,7 +55,7 @@ class StaffType(models.Model):
         verbose_name_plural = 'Staff Types'
 
     def __str__(self):
-        return self.staffType
+        return f"{self.staffType} - {self.created_by.first_name}"
 
 
 class StaffProfile(models.Model):

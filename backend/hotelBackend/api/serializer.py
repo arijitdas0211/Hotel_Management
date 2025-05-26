@@ -18,11 +18,10 @@ class StaffTypeSerializer(serializers.ModelSerializer):
         model = StaffType
         fields = "__all__"
 
-
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StaffProfile
-        fields = "__all__"
+        model = StaffType
+        fields = ['id', 'staff_type_name', 'created_by']
 
 
 class CustomerSerializer(serializers.ModelSerializer):

@@ -30,8 +30,8 @@ function App() {
         
         <Route path="/admin" element={<Admin />}>
           <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="staff-type" element={<StaffTypeForm />} />
-          <Route path="staff" element={<Staff />} />
+          <Route path="staff-type" element={<ProtectedRoute><StaffTypeForm /></ProtectedRoute>} />
+          <Route path="staff" element={<ProtectedRoute><Staff /></ProtectedRoute>} />
           <Route path="table" element={<Table />} />
           <Route path="menu-category" element={<MenuCategory />} />
           <Route path="menu" element={<Menu />} />
